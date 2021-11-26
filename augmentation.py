@@ -29,8 +29,9 @@ class Augmenter():
         # mask = np.transpose(mask, (2, 0, 1))
         
         input = torch.from_numpy(input)
-        mask = torch.from_numpy(mask).type(torch.LongTensor)
-        # mask = mask.reshape((1, mask.shape[0], mask.shape[1]))
+        # mask = torch.from_numpy(mask).type(torch.LongTensor)
+        mask = torch.from_numpy(mask)
+        mask = mask.reshape((1, mask.shape[0], mask.shape[1]))
 
         data = {'name': name, 'input': input, 'mask': mask}
 

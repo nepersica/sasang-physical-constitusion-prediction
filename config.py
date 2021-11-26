@@ -6,7 +6,7 @@ part_KOR = ['배경', '머리', '몸통', '위왼팔', '위오른팔', '아래�
 part_ENG = ['background,' 'head', 'torso', 'leftupperarm' ,'rightupperarm', 'leftforearm', 'rightforearm',
            'lefthand', 'righthand', 'leftthigh', 'rightthigh', 'leftshank', 'rightshank', 'leftfoot', 'rightfoot']
 human_parT_ID = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14]
-seg_num = 15 
+seg_num = 1
 
 import numpy as np
 import scipy.io

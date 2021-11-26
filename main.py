@@ -20,7 +20,7 @@ def get_args():
     parser.add_argument("--transform", default="off", type=str, dest="transform")
     parser.add_argument("--image_size", default=320, type=int, dest="image_size")
 
-    parser.add_argument("--data_dir", default="./dataset/v2", type=str, dest="data_dir")
+    parser.add_argument("--data_dir", default="./dataset/v3", type=str, dest="data_dir")
     parser.add_argument("--result_dir", default="./result", type=str, dest="result_dir")
     parser.add_argument("--log_dir", default="./log", type=str, dest="log_dir")
     parser.add_argument("--ckpt_dir", default="./checkpoint", type=str, dest="ckpt_dir")
@@ -28,7 +28,7 @@ def get_args():
     parser.add_argument("--num_workers", default=4
                         , type=int, dest="num_workers")
 
-    parser.add_argument("--mode", default="test", type=str, dest="mode")
+    parser.add_argument("--mode", default="train", type=str, dest="mode")
     parser.add_argument("--model", default="deeplab", type=str, dest="model")
     parser.add_argument("--train_continue", default="off", type=str, dest="train_continue")
     parser.add_argument("--pretrained", default="off", type=str, dest="pretrained")
