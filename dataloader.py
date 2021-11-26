@@ -28,7 +28,7 @@ class BodyPartDataset(Dataset):
     
     def _get_data_names(self):
         self.data_list = []
-        image_dirs = open(f"./dataset/v2/{args.mode}.txt",'r').read().splitlines()
+        image_dirs = open(f"./dataset/v2/{self.mode}.txt",'r').read().splitlines()
         
         for dir in image_dirs:
             image_list = os.listdir(os.path.join(self.root_dir, 'image', dir))
@@ -96,6 +96,8 @@ class BodyPartDataset(Dataset):
             
             if label == '위아랫쪽다리' :
                 label = '아래왼쪽다리'
+            elif label == '우왼쪽다리':
+                label = '위왼쪽다리'
             
             mask, index = self._fill_mask(label, location, (total_mask.shape[0], total_mask.shape[1]), label_path)
             total_mask[:, :, index] = mask

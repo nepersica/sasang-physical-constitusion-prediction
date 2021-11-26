@@ -28,7 +28,7 @@ def get_args():
     parser.add_argument("--num_workers", default=4
                         , type=int, dest="num_workers")
 
-    parser.add_argument("--mode", default="train", type=str, dest="mode")
+    parser.add_argument("--mode", default="test", type=str, dest="mode")
     parser.add_argument("--model", default="deeplab", type=str, dest="model")
     parser.add_argument("--train_continue", default="off", type=str, dest="train_continue")
     parser.add_argument("--pretrained", default="off", type=str, dest="pretrained")

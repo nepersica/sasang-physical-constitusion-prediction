@@ -34,7 +34,6 @@ def save_filename():
     for data in data_test:
         test_file.write(f'{data}\n')
     
-    
 
 def rename_subdir(pose_dir_path):
     direction_dirs = os.listdir(pose_dir_path)

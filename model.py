@@ -27,4 +27,5 @@ def build_model(model_name, lr):
     return model, optimizer
         
     
-    
+if __name__ == '__main__':
+    build_model('deeplab', 1e-3)

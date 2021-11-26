@@ -1,10 +1,66 @@
 import torch
 import numpy as np
 import os
+import config as cfg
+import cv2 as cv
 
-def accuracy(scores, targets, image_size, k=1):
+def denoramlize_image(input):
+    mean=(0.485, 0.456, 0.406)
+    mean = np.array(mean, dtype=np.float32)
+    std=(0.229, 0.224, 0.225)
+    std = np.array(std, dtype=np.float32)
+    
+    mean *= 255.0
+    std *= 255.0
+    
+    input = (input * std) + mean
+    
+    return input.astype('uint8')
+
+
+def to_bgr(y_pred, image_size):
+    ret = np.zeros((image_size, image_size, 3), np.float32)
+    for r in range(320):
+        for c in range(320):
+            color_id = int(y_pred[r, c])
+            color_hex = cfg.color[color_id].lstrip('#')
+            try:
+                color_rgb = tuple(int(color_hex[i:i+2], 16) for i in (0, 2, 4)) 
+            except:
+                print(color_id)
+            
+            ret[r, c, :] = color_rgb
+    ret = ret.astype(np.uint8)
+    return ret
+
+
+def output_to_numpy(y_pred):
+    final_output = np.zeros((y_pred.shape[0], y_pred.shape[2], y_pred.shape[3]))
+    for i in range(y_pred.shape[0]):
+        _output = y_pred.cpu().numpy()[i] 
+        _output = np.argmax(_output, axis=0)
+        final_output[i, ...] = _output
+    return final_output
+
+
+def save_predict_mask(names, inputs, y_pred):
+    np_pred = output_to_numpy(y_pred)
+    
+    for idx in range(np_pred.shape[0]):
+        name = names[idx]
+        input = inputs[idx]
+        input = denoramlize_image(input)
+        
+        out = to_bgr(np_pred[idx], image_size=np_pred.shape[1])
+        
+        overlay_image = cv.addWeighted(input,0.4,out,0.6,0)
+        
+        cv.imwrite(os.path.join('./result/predict', name+'.jpg'), overlay_image)
+        
+
+def accuracy(predicts, targets, image_size, k=1):
     batch_size = targets.size(0)
-    _, ind = scores.topk(k, 1, True, True)
+    _, ind = predicts.topk(k, 1, True, True)
     ind = torch.squeeze(ind, dim=1)
     correct = ind.eq(targets)
     correct_total = correct.view(-1).float().sum()  # 0D tensor

@@ -33,62 +33,30 @@ def test(args, model, optimizer, device):
     
     
     with torch.no_grad():
-        net.eval()
+        model.eval()
 
         loss_arr = []
-        total_recall = []
-        total_precision = []
-        total_f1_score = []
-        total_jaccard = []
+        total_acc = []
 
-        patient_score = {}
 
         for iter, data in enumerate(tqdm(test_loader), 1):
             # forward pass
-            input = data['input'].to(device)        ]
+            name = data['name']
+            input = data['input'].to(device)        
             label = data['mask'].to(device)         
             
-            output = model(input)
+            output = model(input)['out']
+
+            loss = criterion(output, label)
             
-            output = output.cpu().numpy()[0]
+            acc = accuracy(output, label, image_size=args.image_size)
+            total_acc.append(acc)
             
             input = fn_tonumpy(input)
-            label = fn_tonumpy(label)
-            output = fn_tonumpy(output)
-            
-            output = np.argmax(output, axis=0)
-            
+            save_predict_mask(name, input, output)
             
 
-            # loss = focal_loss(output, label)
-            loss = criterion(output, label)
-            acc = accuracy(output, label)
-            
-
-    print(f'Average Recall : {np.array(total_recall).mean()}')
-    print(f'Average Precision : {np.array(total_precision).mean()}')
-    print(f'Average F1 Score : {np.array(total_f1_score).mean()}')
-    print(f'Average Jaccard : {np.array(total_jaccard).mean()}')
-
-    print("AVERAGE TEST: BATCH %04d / %04d | LOSS %.4f" %
-          (iter, num_data_test, np.mean(loss_arr)))
-
+    print(f'Average Accuracy : {np.array(total_acc).mean()}')
+    
 if __name__ == '__main__':
-
-
-        with torch.no_grad():
-            out = model(x_test)['out']
-
-        out = out.cpu().numpy()[0]
-        out = np.argmax(out, axis=0)
-        out = to_bgr(out)
-
-        ret = image * 0.6 + out * 0.4
-        ret = ret.astype(np.uint8)
-
-        if not os.path.exists('images'):
-            os.makedirs('images')
-
-        cv.imwrite('images/{}_image.png'.format(i), image)
-        cv.imwrite('images/{}_merged.png'.format(i), ret)
-        cv.imwrite('images/{}_out.png'.format(i), out)
+    test()
