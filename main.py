@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch
 from model import build_model
 from train import train
+from test import test
 
 # https://github.com/foamliu/Look-Into-Person-PyTorch/blob/ca524bac51e3b54a0d723e746ee400905567adcb/train.py#L97
 
@@ -45,7 +46,7 @@ def main(args):
         train(args, model, optimizer, device)
 
     else:   # Test 데이터
-        test(args, device)
+        test(args, model, optimizer, device)
 
 
 if __name__ == '__main__':

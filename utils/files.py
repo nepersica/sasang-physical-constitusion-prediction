@@ -4,6 +4,37 @@ from pathlib import Path
 import glob
 from tqdm import tqdm
 
+def save_filename():
+    data_path = './dataset/v2/image'
+    data_list = os.listdir(data_path)
+    
+    num_train = int(len(data_list)*0.8)
+    num_rest = len(data_list)-num_train
+
+    if num_rest % 2 == 1:
+        num_val = int(num_rest/2)+1
+        num_test = int(num_rest/2)
+    else:
+        num_val = int(num_rest/2)
+        num_test = int(num_rest/2)
+
+    data_train = data_list[:num_train]
+    data_val = data_list[num_train:num_train+num_val]
+    data_test = data_list[num_train+num_val:]
+         
+    train_file = open("./dataset/v2/train.txt", "w+")
+    for data in data_train:
+        train_file.write(f'{data}\n')
+    
+    val_file = open("./dataset/v2/val.txt", "w+")
+    for data in data_val:
+        val_file.write(f'{data}\n')
+        
+    test_file = open("./dataset/v2/test.txt", "w+")
+    for data in data_test:
+        test_file.write(f'{data}\n')
+    
+    
 
 def rename_subdir(pose_dir_path):
     direction_dirs = os.listdir(pose_dir_path)
@@ -82,5 +113,6 @@ def move_label_files():
 
 if __name__ == '__main__':
     # rename_dirs()
-    move_label_files()
+    # move_label_files()
+    save_filename()
 

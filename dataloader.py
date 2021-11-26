@@ -28,7 +28,7 @@ class BodyPartDataset(Dataset):
     
     def _get_data_names(self):
         self.data_list = []
-        image_dirs = os.listdir(os.path.join(self.root_dir, 'image'))
+        image_dirs = open(f"./dataset/v2/{args.mode}.txt",'r').read().splitlines()
         
         for dir in image_dirs:
             image_list = os.listdir(os.path.join(self.root_dir, 'image', dir))
@@ -151,5 +151,5 @@ if __name__ == '__main__':
     dataset = BodyPartDataset(root_dir=args.data_dir, transform="on", image_size=args.image_size)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers) 
 
-    for i in tqdm(range(len(dataset))):
+    for i in tqdm(range(6835, len(dataset))):
         dataset.__getitem__(i)

@@ -1,4 +1,3 @@
-from loss import *
 from tqdm import tqdm
 from model import *
 from dataloader import BodyPartDataset
