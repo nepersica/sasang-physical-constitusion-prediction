@@ -28,7 +28,7 @@ class BodyPartDataset(Dataset):
     
     def _get_data_names(self):
         self.data_list = []
-        image_dirs = open(f"./dataset/v3/{self.mode}.txt",'r').read().splitlines()
+        image_dirs = open(f"./nvme/dataset/{self.mode}.txt",'r').read().splitlines()
         
         for dir in image_dirs:
             image_list = os.listdir(os.path.join(self.root_dir, 'image', dir))
@@ -98,8 +98,6 @@ class BodyPartDataset(Dataset):
             y = list(map(int, annotation['polygon']['location'].split()[1::2]))
             location = np.array([list(e) for e in zip(x, y)])
             
-            # if label == '몸통':
-                
             if label == '위아랫쪽다리' :
                 label = '아래왼쪽다리'
             elif label == '우왼쪽다리':

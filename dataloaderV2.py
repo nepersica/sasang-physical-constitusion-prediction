@@ -23,37 +23,27 @@ class BodyPartDataset(Dataset):
         self.root_dir = root_dir
         self.image_size = image_size
         self.transform = Augmenter(transform)
-        self.mode=mode        
+        self.mode=mode    
         self.dataset = self._get_data_names()
     
     def _get_data_names(self):
-        self.data_list = []
-        image_dirs = open(f"./dataset/v2/{self.mode}.txt",'r').read().splitlines()
-        
+        data_list = []
+        # image_dirs = open(f"./nvme/dataset/{self.mode}.txt",'r').read().splitlines()
+        print(self.root_dir)
+        image_dirs = os.listdir(os.path.join(self.root_dir, 'image'))
         for dir in image_dirs:
             image_list = os.listdir(os.path.join(self.root_dir, 'image', dir))
             for image_name in image_list:
                 name = image_name[:-4]
+                if self.mode == 'test':
+                    if not name[-2:] == '03':
+                        continue
                 image_path = os.path.join(self.root_dir, 'image', dir, image_name)
                 label_path = os.path.join(self.root_dir, 'label', dir, name + '.json')
-                
-                self.data_list.append({'name': name, 'image_path':image_path, 'label_path':label_path})
-                
-        num_train = int(len(self.data_list)*0.8)
-        num_rest = len(self.data_list)-num_train
-
-        if num_rest % 2 == 1:
-            num_val = int(num_rest/2)+1
-        else:
-            num_val = int(num_rest/2)
-            
-        if self.mode == 'train':
-            dataset = self.data_list[:num_train]
-        elif self.mode == 'val':
-            dataset = self.data_list[num_train:num_train+num_val]
-        elif self.mode == 'test':
-            dataset = self.data_list[num_train+num_val:]
-        return dataset
+                                
+                data_list.append({'name': name, 'image_path':image_path, 'label_path':label_path})
+          
+        return data_list
 
     def __len__(self):
         return len(self.dataset)
@@ -70,7 +60,10 @@ class BodyPartDataset(Dataset):
         input = cv.imread(image_path)
 
         label_path = self.dataset[index]['label_path']
-        mask = self._load_json(label_path, (input.shape[0], input.shape[1]), input)
+        try:
+            mask = self._load_json(label_path, (input.shape[0], input.shape[1]), input)
+        except:
+            mask = np.zeros((input.shape[0], input.shape[1]))
         
         dim = (self.image_size, self.image_size)
         resized_input = cv.resize(input, dim, interpolation = cv.INTER_AREA)
@@ -96,7 +89,6 @@ class BodyPartDataset(Dataset):
             
             mask, index = self._fill_mask(label, location, shape, label_path)
             break
-            
         return mask
             
                    
@@ -123,7 +115,6 @@ def visualize(self, image):
     plt.axis('off')
     plt.imshow(image)
     plt.show()
-
 
 
 if __name__ == '__main__':

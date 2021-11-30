@@ -20,7 +20,7 @@ def ftp_pull():
     # Output: '200 PROT command successful.'
     dir_list = open('./dataset/file name.txt', 'r').read().split('\n')\
         
-    sort_list = [f'4.Y자/1.앞']
+    sort_list = [f'3.T자/1.앞']
         
     # outlier_file = open("./dataset/outlier.txt", "w+")
     for sort in sort_list:

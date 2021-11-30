@@ -4,36 +4,6 @@ from pathlib import Path
 import glob
 from tqdm import tqdm
 
-def save_filename():
-    data_path = './dataset/v2/image'
-    data_list = os.listdir(data_path)
-    
-    num_train = int(len(data_list)*0.8)
-    num_rest = len(data_list)-num_train
-
-    if num_rest % 2 == 1:
-        num_val = int(num_rest/2)+1
-        num_test = int(num_rest/2)
-    else:
-        num_val = int(num_rest/2)
-        num_test = int(num_rest/2)
-
-    data_train = data_list[:num_train]
-    data_val = data_list[num_train:num_train+num_val]
-    data_test = data_list[num_train+num_val:]
-         
-    train_file = open("./dataset/v2/train.txt", "w+")
-    for data in data_train:
-        train_file.write(f'{data}\n')
-    
-    val_file = open("./dataset/v2/val.txt", "w+")
-    for data in data_val:
-        val_file.write(f'{data}\n')
-        
-    test_file = open("./dataset/v2/test.txt", "w+")
-    for data in data_test:
-        test_file.write(f'{data}\n')
-    
 
 def rename_subdir(pose_dir_path):
     direction_dirs = os.listdir(pose_dir_path)
@@ -110,43 +80,8 @@ def move_label_files():
             shutil.rmtree(os.path.join(json_dest_path, dir))
             shutil.rmtree(os.path.join(image_dest_path, dir))
 
-def move_certain_files():
-    # 몸통 annotation만 있는 파일 이동
-    image_path = './dataset/v2/origin_image'
-    image_dest_path = './dataset/v3/image'
-    dir_list = os.listdir(image_path)
-    
-    json_path = './dataset/v1/label'
-    json_dest_path = './dataset/v3/label'
-    
-    for dir in tqdm(dir_list):
-        dir_list = os.listdir(os.path.join(image_path, dir))
-        if not os.path.isdir(os.path.join(json_dest_path, dir)):
-            os.mkdir(os.path.join(json_dest_path, dir))
-        if not os.path.isdir(os.path.join(image_dest_path, dir)):
-            os.mkdir(os.path.join(image_dest_path, dir))    
-        
-        for image in dir_list:
-            if not ((image[:2] == '01' or image[:2] == '04') and (image[3:5] == '01') and (image[-6:-4] == '03')):
-                continue
-            
-            json = image[:-4]
-            depart_path = os.path.join(json_path, dir, 'json')
-            
-            try:
-                shutil.copy(os.path.join(depart_path, json+'.json'), os.path.join(json_dest_path, dir, json+'.json'))
-                shutil.copy(os.path.join(image_path, dir, image), os.path.join(image_dest_path, dir, image))
-            except:
-                print(os.path.join(image_path, dir, image))
-        
-        if len(os.listdir(os.path.join(json_dest_path, dir))) == 0:
-            shutil.rmtree(os.path.join(json_dest_path, dir))
-            shutil.rmtree(os.path.join(image_dest_path, dir))
-    
-
 if __name__ == '__main__':
     # rename_dirs()
-    move_certain_files()
     # move_label_files()
-    # save_filename()
+    save_filename()
 

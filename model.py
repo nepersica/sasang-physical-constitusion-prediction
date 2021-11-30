@@ -1,4 +1,7 @@
 from segmentation_models_pytorch.deeplabv3.model import DeepLabV3Plus
+from segmentation_models_pytorch import Unet
+import config as cfg
+
 import config as cfg
 import torch
 import torch.nn as nn
@@ -10,12 +13,12 @@ def build_model(model_name, lr):
     
     if model_name == 'deeplab':
         
-        model = models.segmentation.deeplabv3_resnet50(pretrained=False, progress=True, num_classes=cfg.seg_num).to(device)
+        # model = models.segmentation.deeplabv3_resnet50(pretrained=False, progress=True, num_classes=cfg.seg_num).to(device)
         
         # summary(model, input_size=(3, 320, 320))
-        # model = DeepLabV3Plus('resnet50', encoder_weights='imagenet', in_channels=3, classes=cfg.seg_num).to(device)
-        # summary(model, (3, 256, 256), 1)
-
+        # model = DeepLabV3Plus('resnet50', encoder_weights=None, in_channels=3, classes=cfg.seg_num).to(device)
+        model = Unet(encoder_name="efficientnet-b3", encoder_weights=None, in_channels=3, classes=cfg.seg_num).to(device)
+        
     # Multi GPU
     if (device.type == 'cuda') and (torch.cuda.device_count() > 1):
         print(f'Multi GPU MODE on... {torch.cuda.device_count()}')
@@ -27,5 +30,4 @@ def build_model(model_name, lr):
     return model, optimizer
         
     
-if __name__ == '__main__':
-    build_model('deeplab', 1e-3)
+    

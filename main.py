@@ -18,21 +18,20 @@ def get_args():
     parser.add_argument("--num_epoch", default=100, type=int, dest="num_epoch")
 
     parser.add_argument("--transform", default="off", type=str, dest="transform")
-    parser.add_argument("--image_size", default=320, type=int, dest="image_size")
+    parser.add_argument("--image_size", default=256, type=int, dest="image_size")
 
-    parser.add_argument("--data_dir", default="./dataset/v3", type=str, dest="data_dir")
+    parser.add_argument("--data_dir", default="./nvme/dataset/v3", type=str, dest="data_dir")
     parser.add_argument("--result_dir", default="./result", type=str, dest="result_dir")
     parser.add_argument("--log_dir", default="./log", type=str, dest="log_dir")
-    parser.add_argument("--ckpt_dir", default="./checkpoint", type=str, dest="ckpt_dir")
+    parser.add_argument("--ckpt_dir", default="./checkpoint/test", type=str, dest="ckpt_dir")
     parser.add_argument("--pretrained_dir", default="./pretrained", type=str, dest="pretrained_dir")
     parser.add_argument("--num_workers", default=4
                         , type=int, dest="num_workers")
 
-    parser.add_argument("--mode", default="train", type=str, dest="mode")
+    parser.add_argument("--mode", default="test", type=str, dest="mode")
     parser.add_argument("--model", default="deeplab", type=str, dest="model")
     parser.add_argument("--train_continue", default="off", type=str, dest="train_continue")
     parser.add_argument("--pretrained", default="off", type=str, dest="pretrained")
-    parser.add_argument("--transfer", default="off", type=str, dest="transfer")
 
 
     args = parser.parse_args()
@@ -41,13 +40,12 @@ def get_args():
 
 def main(args):
     model, optimizer = build_model(args.model, args.lr)
-    
+
     if args.mode == 'train':  # Train 데이터, Validation 데이터
         train(args, model, optimizer, device)
 
     else:   # Test 데이터
         test(args, model, optimizer, device)
-
 
 if __name__ == '__main__':
     args = get_args()

@@ -14,9 +14,11 @@ class Augmenter():
         ])
 
         self.random_transform = A.Compose([
-            A.HorizontalFlip(p=1),
-            A.VerticalFlip(p=1),
-            A.RandomRotate90(p=1),
+            A.HorizontalFlip(p=0.5),    
+            A.RandomBrightnessContrast(brightness_limit=(0, 0.2), contrast_limit=(0, 0.2), p=0.5),
+            A.GaussianBlur(blur_limit=(3, 5), p=0.5),     
+            A.GaussNoise(p=0.5),
+            A.ColorJitter(p=0.5),
             A.Normalize(),
         ])
 
