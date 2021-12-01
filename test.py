@@ -15,7 +15,6 @@ fn_denorm = lambda x, mean, std: (x * std) + mean  # DeNomarlization
 fn_class = lambda x: 1.0 * (x > 0.4)
 
 def get_data(args, mode):
-    ### Test Dataset 가져오기
     print(f'> Getting {mode} data.... > Augmentation mode: {args.transform}')
     dataset = BodyPartDataset(root_dir=args.data_dir, transform=args.transform, image_size=args.image_size, mode=mode)
     loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=False, num_workers=args.num_workers) 
@@ -23,24 +22,17 @@ def get_data(args, mode):
     return dataset, loader
 
 def test(args, model, optimizer, device):
-    ### Test Dataset 가져오기
     test_dataset, test_loader = get_data(args, 'test')
-    
     num_data_test = len(test_dataset) 
-    print(num_data_test)
-
-    # criterion = nn.BCEWithLogitsLoss().to(device)
 
     model, optimizer, st_epoch = load(ckpt_dir=args.ckpt_dir, model=model, optim=optimizer)
     print(f'Get lr:{args.lr}, epoch:{st_epoch}.pth. \n')
 
-    
     st_epoch = 0
     
     with torch.no_grad():
         model.eval()
 
-        loss_arr = []
         total_accuracy = []
         total_f1 = []
         total_precision = []

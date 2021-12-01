@@ -1,8 +1,5 @@
 import albumentations as A
-from albumentations.pytorch.transforms import ToTensorV2
 import torch
-import cv2 as cv
-import matplotlib.pyplot as plt
 import numpy as np
 
 class Augmenter():
@@ -28,10 +25,8 @@ class Augmenter():
         mask = mask.astype('float32')
 
         input = np.transpose(input, (2, 0, 1))
-        # mask = np.transpose(mask, (2, 0, 1))
         
         input = torch.from_numpy(input)
-        # mask = torch.from_numpy(mask).type(torch.LongTensor)
         mask = torch.from_numpy(mask)
         mask = mask.reshape((1, mask.shape[0], mask.shape[1]))
 

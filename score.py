@@ -2,13 +2,9 @@ import torch
 import numpy as np
 
 def numeric_score(output, label):
-    """Computes scores:
-    FP = False Positives -> 출혈로 오탐
-    FN = False Negatives -> 실제 병변인데 prediction은 병변X
-    TP = True Positives -> 실제 병변을 병변으로 예측
-    TN = True Negatives -> 실제 병변x를 병변x로 예측
-    return: FP, FN, TP, TN"""
-
+    """
+    Computes scores
+    """
     FP = np.float(np.sum((output == 1) & (label == 0)))
     FN = np.float(np.sum((output == 0) & (label == 1)))
     if FP != 0.0 or FN != 0.0:
@@ -21,9 +17,6 @@ def numeric_score(output, label):
 def get_score(output, label):
     """
     get score based on confusion matrix
-    :param output:
-    :param label:
-    :return:
     """
     FP, FN, TP, TN = numeric_score(output, label)
     N = FP + FN + TP + TN
@@ -45,12 +38,3 @@ def get_score(output, label):
     jaccard_score = TP / (TP+FN+FP+ epsilon)
 
     return recall * 100, precision * 100, accuracy * 100, f1_score*100, jaccard_score*100
-
-
-def accuracy(predicts, targets, image_size, k=1):
-    batch_size = targets.size(0)
-    _, ind = predicts.topk(k, 1, True, True)
-    ind = torch.squeeze(ind, dim=1)
-    correct = ind.eq(targets)
-    correct_total = correct.view(-1).float().sum()  # 0D tensor
-    return correct_total.item() * (100.0 / batch_size / image_size / image_size)

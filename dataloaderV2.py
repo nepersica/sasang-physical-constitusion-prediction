@@ -16,8 +16,6 @@ import torch
 # 3)두 데이터 모두 가지고 해봐도 좋을것 같고,
 # 4)기존 한의학적 이론을 바탕으로 rule base로 모델링 한것과 비교
 
-# Tensor shape: (15, hegith, width)
-
 class BodyPartDataset(Dataset):
     def __init__(self, root_dir, transform="on", image_size=None, mode='train'):
         self.root_dir = root_dir
@@ -28,9 +26,9 @@ class BodyPartDataset(Dataset):
     
     def _get_data_names(self):
         data_list = []
-        # image_dirs = open(f"./nvme/dataset/{self.mode}.txt",'r').read().splitlines()
+        image_dirs = open(f"./dataset/v2/{self.mode}.txt",'r').read().splitlines()
         print(self.root_dir)
-        image_dirs = os.listdir(os.path.join(self.root_dir, 'image'))
+        # image_dirs = os.listdir(os.path.join(self.root_dir, 'image'))
         for dir in image_dirs:
             image_list = os.listdir(os.path.join(self.root_dir, 'image', dir))
             for image_name in image_list:
@@ -75,6 +73,8 @@ class BodyPartDataset(Dataset):
         
         
     def _load_json(self, label_path, shape, image):
+        mask = np.zeros((shape[0], shape[1], 3))
+        
         with open(label_path, 'r', encoding='UTF8') as f:
             content = json.load(f)
         annotations = content['labelingInfo']
@@ -87,8 +87,16 @@ class BodyPartDataset(Dataset):
             if not label == '몸통':
                 continue
             
-            mask, index = self._fill_mask(label, location, shape, label_path)
-            break
+            # mask, index = self._fill_mask(label, location, shape, label_path)
+            # break
+            color_hex = annotation['polygon']['color'].lstrip('#')
+            color_rgb = tuple(int(color_hex[i:i+2], 16) for i in (0, 2, 4))
+            mask = fillPoly(mask, pts = [location], color=color_rgb)            
+        overlay_image = cv.addWeighted(image,0.4,mask.astype('uint8'),0.6,0)
+        
+        if label_path[35:-5] == '03':
+            cv.imwrite(os.path.join('./result/overlay/origin', label_path[24:-5]+'.jpg'), overlay_image)
+        
         return mask
             
                    
@@ -108,8 +116,6 @@ class BodyPartDataset(Dataset):
         
         return mask, index
 
-  
-      
 def visualize(self, image):
     plt.figure(figsize=(10, 10))
     plt.axis('off')

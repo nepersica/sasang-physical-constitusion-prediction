@@ -8,16 +8,13 @@ import torch.nn as nn
 from torchsummary import summary
 from torchvision import models
 
-def build_model(model_name, lr):
+def build_model(model_name, lr, pretrained=None):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     
-    if model_name == 'deeplab':
-        
-        # model = models.segmentation.deeplabv3_resnet50(pretrained=False, progress=True, num_classes=cfg.seg_num).to(device)
-        
-        # summary(model, input_size=(3, 320, 320))
-        # model = DeepLabV3Plus('resnet50', encoder_weights=None, in_channels=3, classes=cfg.seg_num).to(device)
-        model = Unet(encoder_name="efficientnet-b3", encoder_weights=None, in_channels=3, classes=cfg.seg_num).to(device)
+    if model_name == 'deeplab_plus':
+        model = DeepLabV3Plus('resnet50', encoder_weights=pretrained, in_channels=3, classes=cfg.seg_num).to(device)
+    elif model_name == 'efficientnet':
+        model = Unet(encoder_name="efficientnet-b3", encoder_weights=pretrained, in_channels=3, classes=cfg.seg_num).to(device)
         
     # Multi GPU
     if (device.type == 'cuda') and (torch.cuda.device_count() > 1):
